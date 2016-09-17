@@ -39,6 +39,7 @@
 # Ultrix                        ULTRIX
 # cygwin                        CYGWIN_NT-5.1
 # MacOSX                        Darwin
+# MSYS2                         MSYS_NT-6.1
 
 
 # find out on which system cmake runs
@@ -47,7 +48,7 @@ if(CMAKE_HOST_UNIX)
   if(CMAKE_UNAME)
     exec_program(uname ARGS -s OUTPUT_VARIABLE CMAKE_HOST_SYSTEM_NAME)
     exec_program(uname ARGS -r OUTPUT_VARIABLE CMAKE_HOST_SYSTEM_VERSION)
-    if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux|CYGWIN.*|Darwin|^GNU$")
+    if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux|CYGWIN.*|Darwin|^GNU$|MSYS.*")
       exec_program(uname ARGS -m OUTPUT_VARIABLE CMAKE_HOST_SYSTEM_PROCESSOR
         RETURN_VALUE val)
       if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin" AND
@@ -151,6 +152,11 @@ macro(ADJUST_CMAKE_SYSTEM_VARIABLES _PREFIX)
   # fix for CYGWIN which has windows version in it
   if(${_PREFIX}_NAME MATCHES CYGWIN)
     set(${_PREFIX}_NAME CYGWIN)
+  endif()
+
+  # fix for MSYS2 which has windows version in it
+  if(${_PREFIX}_NAME MATCHES MSYS_NT)
+    set(${_PREFIX}_NAME MSYS_NT)
   endif()
 
   # set CMAKE_SYSTEM to the CMAKE_SYSTEM_NAME
